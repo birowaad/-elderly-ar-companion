@@ -1,0 +1,21 @@
+/* Additional styles */
+.model-viewer {
+    --poster-color: transparent;
+}
+
+.progress-bar {
+    transition: width 0.1s linear;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #8B6914, #6B4E0A);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #6B4E0A, #5a3e08);
+}
+
+.card {
+    border-radius: 20px;
+}
