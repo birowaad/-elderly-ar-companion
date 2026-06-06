@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h1 class="display-4 fw-bold" style="color: #8B6914;">🤖 Elderly AR Companion</h1>
+        <p class="lead mt-3">Your AI-powered virtual companion for emotional support and mental wellness</p>
+        <div class="mt-4">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 me-2">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg px-4">Login</a>
+        </div>
+        
+        <div class="row mt-5 g-4">
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <i class="bi bi-robot fs-1 text-warning"></i>
+                    <h5 class="mt-2">Virtual Companion</h5>
+                    <p>Friendly AI that talks and listens to you</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <i class="bi bi-puzzle fs-1 text-success"></i>
+                    <h5 class="mt-2">Memory Games</h5>
+                    <p>Fun activities to stimulate your mind</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <i class="bi bi-chat-heart fs-1 text-danger"></i>
+                    <h5 class="mt-2">Family Connection</h5>
+                    <p>Easy contact with loved ones</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
