@@ -1,1 +1,112 @@
+{% extends "base.html" %}
 
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-lg">
+            <div class="card-body p-0">
+                <div id="ar-container" style="height: 500px; background: #1a1a1a; border-radius: 16px; overflow: hidden;">
+                    <model-viewer
+                        id="companion-viewer"
+                        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/DamagedHelmet/glTF/DamagedHelmet.gltf"
+                        ar
+                        ar-modes="webxr scene-viewer quick-look"
+                        camera-controls
+                        auto-rotate
+                        style="width:100%; height:100%; background: #2a2a2a;">
+                        <button slot="ar-button" style="background: #DAA520; border: none; color: white; padding: 10px 20px; border-radius: 30px;">
+                            🕶️ View in AR
+                        </button>
+                    </model-viewer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8 mx-auto">
+        <div class="card bg-warning bg-opacity-10">
+            <div class="card-body text-center" id="companion-message">
+                <div class="spinner-border text-warning" role="status"></div>
+                <p class="mt-2">Your AI companion is waking up...</p>
+            </div>
+        </div>
+        
+        <div class="row g-3 mt-2">
+            <div class="col-4">
+                <button class="btn btn-outline-primary w-100" onclick="sendMessage('game')">
+                    <i class="bi bi-puzzle"></i> Play Game
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline-success w-100" onclick="sendMessage('family')">
+                    <i class="bi bi-people"></i> Call Family
+                </button>
+            </div>
+            <div class="col-4">
+                <button class="btn btn-outline-info w-100" onclick="sendMessage('meditate')">
+                    <i class="bi bi-flower1"></i> Meditate
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-3 text-center">
+            <small class="text-muted">
+                <i class="bi bi-mic"></i> You can speak to your AI companion using your device's microphone
+            </small>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load greeting on page load
+    fetch('/api/get-greeting')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('companion-message').innerHTML = `
+                <i class="bi bi-robot fs-1 text-warning"></i>
+                <p class="mt-2">${data.greeting}</p>
+            `;
+        });
+    
+    function sendMessage(type) {
+        const messages = {
+            'game': "I'd love to play a memory game with you! Let's test your recall skills.",
+            'family': "Connecting with family is important. Would you like me to help you call someone?",
+            'meditate': "Let's take a deep breath together. Follow my guidance for a relaxing session."
+        };
+        
+        document.getElementById('companion-message').innerHTML = `
+            <i class="bi bi-robot fs-1 text-warning"></i>
+            <p class="mt-2">${messages[type]}</p>
+            <div class="progress mt-2" style="height: 3px;">
+                <div class="progress-bar bg-warning" style="width: 100%; animation: progress 3s linear;"></div>
+            </div>
+        `;
+        
+        // Log interaction
+        fetch('/api/log-interaction', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({type: type, duration: 3, completion: 100})
+        });
+        
+        setTimeout(() => {
+            fetch('/api/get-greeting').then(res => res.json()).then(data => {
+                document.getElementById('companion-message').innerHTML = `
+                    <i class="bi bi-robot fs-1 text-warning"></i>
+                    <p class="mt-2">${data.greeting}</p>
+                `;
+            });
+        }, 5000);
+    }
+</script>
+
+<style>
+    @keyframes progress {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+</style>
+{% endblock %}
