@@ -78,3 +78,97 @@
     </div>
     
     <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5><i class="bi bi-trophy"></i> Mood Assessment</h5>
+                <p class="small text-muted">Track your emotional wellbeing</p>
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#moodModal">
+                    Take Assessment
+                </button>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5><i class="bi bi-download"></i> Research Data</h5>
+                <p class="small text-muted">Export your data for scientific research</p>
+                <a href="{{ url_for('export_research_data') }}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-file-spreadsheet"></i> Export CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mood Assessment Modal -->
+<div class="modal fade" id="moodModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">How are you feeling today?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">1. Do you feel lonely? (1=Never, 9=Always)</label>
+                    <input type="range" class="form-range" id="loneliness" min="1" max="9" value="5">
+                    <span id="lonelinessVal" class="badge bg-secondary">5</span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">2. How has your mood been? (0=Very low, 27=Very high)</label>
+                    <input type="range" class="form-range" id="depression" min="0" max="27" value="13">
+                    <span id="depressionVal" class="badge bg-secondary">13</span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">3. Life satisfaction? (5=Low, 35=High)</label>
+                    <input type="range" class="form-range" id="satisfaction" min="5" max="35" value="20">
+                    <span id="satisfactionVal" class="badge bg-secondary">20</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="submitAssessment()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('loneliness').addEventListener('input', function() {
+        document.getElementById('lonelinessVal').textContent = this.value;
+    });
+    document.getElementById('depression').addEventListener('input', function() {
+        document.getElementById('depressionVal').textContent = this.value;
+    });
+    document.getElementById('satisfaction').addEventListener('input', function() {
+        document.getElementById('satisfactionVal').textContent = this.value;
+    });
+    
+    function submitAssessment() {
+        const data = {
+            loneliness: parseInt(document.getElementById('loneliness').value),
+            depression: parseInt(document.getElementById('depression').value),
+            satisfaction: parseInt(document.getElementById('satisfaction').value)
+        };
+        
+        fetch('/api/mood-assessment', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(response => response.json()).then(data => {
+            alert('Assessment saved! Thank you.');
+            location.reload();
+        });
+    }
+    
+    function logActivity(type) {
+        fetch('/api/log-interaction', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({type: type, duration: 5, completion: 100})
+        }).then(() => {
+            alert('Activity logged! Check your dashboard for insights.');
+        });
+    }
+</script>
+{% endblock %}
